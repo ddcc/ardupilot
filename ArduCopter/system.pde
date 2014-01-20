@@ -241,6 +241,9 @@ static void init_ardupilot()
     // initialise sonar
 #if CONFIG_SONAR == ENABLED
     init_sonar();
+#if CONFIG_SONAR_SOURCE == SONAR_SOURCE_UART
+    hal.uartC->begin(9600, 8, 4);
+#endif
 #endif
 
     // initialize commands
