@@ -160,7 +160,7 @@ static void init_ardupilot()
         // baud rate
         hal.uartA->begin(map_baudrate(g.serial3_baud, SERIAL3_BAUD));
     }
-#else
+#elif CONFIG_SONAR_SOURCE != SONAR_SOURCE_UART
     // we have a 2nd serial port for telemetry
     hal.uartC->begin(map_baudrate(g.serial3_baud, SERIAL3_BAUD), 128, 128);
     gcs3.init(hal.uartC);

@@ -8,8 +8,10 @@ static void init_sonar(void)
 {
   #if CONFIG_SONAR_SOURCE == SONAR_SOURCE_ADC
     sonar->calculate_scaler(g.sonar_type, 3.3f);
-  #else
+  #elif CONFIG_SONAR_SOURCE == SONAR_SOURCE_ANALOG_PIN
     sonar->calculate_scaler(g.sonar_type, 5.0f);
+  #elif CONFIG_SONAR_SOURCE == SONAR_SOURCE_UART
+    hal.uartC->begin(9600, 8, 4);
   #endif
 }
  #endif
