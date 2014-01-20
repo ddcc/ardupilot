@@ -290,6 +290,24 @@ static void NOINLINE send_hwstatus(mavlink_channel_t chan)
         hal.i2c->lockup_count());
 }
 
+static void NOINLINE send_rangefinder(mavlink_channel_t chan)
+{
+    if (!g.sonar_enabled) {
+        // no sonar to report
+        return;
+    }
+
+    float distance_cm, voltage;
+
+    distance_cm = sonar->read();
+    voltage = sonar->raw_value;
+    
+    mavlink_msg_rangefinder_send(
+        chan,
+        distance_cm * 0.01f,
+        voltage);
+}
+
 static void NOINLINE send_gps_raw(mavlink_channel_t chan)
 {
     mavlink_msg_gps_raw_int_send(
@@ -699,6 +717,13 @@ static bool mavlink_try_send_message(mavlink_channel_t chan, enum ap_message id,
         // unused
         break;
 
+    case MSG_RANGEFINDER:
+#if CONFIG_SONAR == ENABLED
+        CHECK_PAYLOAD_SIZE(RANGEFINDER);
+        send_rangefinder(chan);
+#endif
+        break;
+
     case MSG_RETRY_DEFERRED:
         break; // just here to prevent a warning
     }
@@ -1050,6 +1075,7 @@ GCS_MAVLINK::data_stream_send(void)
     if (stream_trigger(STREAM_EXTRA3)) {
         send_message(MSG_AHRS);
         send_message(MSG_HWSTATUS);
+        send_message(MSG_RANGEFINDER);
         send_message(MSG_SYSTEM_TIME);
     }
 }

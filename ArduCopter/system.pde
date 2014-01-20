@@ -152,10 +152,10 @@ static void init_ardupilot()
  #elif CONFIG_SONAR_SOURCE == SONAR_SOURCE_ANALOG_PIN
     sonar_analog_source = hal.analogin->channel(
             CONFIG_SONAR_SOURCE_ANALOG_PIN);
- #else
+ #elif CONFIG_SONAR_SOURCE != SONAR_SOURCE_UART
   #warning "Invalid CONFIG_SONAR_SOURCE"
  #endif
-    sonar = new AP_RangeFinder_MaxsonarXL(sonar_analog_source,
+    sonar = new AP_RangeFinder_LR4(hal.uartC,
             &sonar_mode_filter);
 #endif
 
@@ -271,6 +271,9 @@ static void init_ardupilot()
     // initialise sonar
 #if CONFIG_SONAR == ENABLED
     init_sonar();
+#if CONFIG_SONAR_SOURCE == SONAR_SOURCE_UART
+    hal.uartC->begin(9600, 8, 4);
+#endif
 #endif
 
     // initialize commands
