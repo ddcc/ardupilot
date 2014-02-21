@@ -104,11 +104,11 @@ bool AP_RangeFinder_LR4::stop_reading() {
     return false;
 }
 
-// read - return last value measured by sensor
+// read - return value measured by sensor
 int AP_RangeFinder_LR4::read() {
     static uint8_t pos = 0;
     static char buf[5];
-    static int val = 0;
+    int val = 0;
     char tmp;
     
     // attempt to start reading if not reading
@@ -166,6 +166,6 @@ int AP_RangeFinder_LR4::read() {
         }
     }
 
-    // failed to get reading, return previous value
-    return val;
+    // failed to get reading
+    return -1;
 }

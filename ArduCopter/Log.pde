@@ -512,35 +512,31 @@ static void Log_Write_Attitude()
 
 struct PACKED log_INAV {
     LOG_PACKET_HEADER;
-    int16_t baro_alt;
-    int16_t inav_alt;
-    int16_t inav_climb_rate;
-    float   accel_corr_x;
-    float   accel_corr_y;
-    float   accel_corr_z;
-    int32_t gps_lat_from_home;
-    int32_t gps_lon_from_home;
-    float   inav_lat_from_home;
-    float   inav_lon_from_home;
+    int32_t baro_alt;
+    int16_t sonar_alt;
+    float inav_alt;
+    int32_t gps_alt;
+    int32_t altitude;
+    int32_t gps_lat;
+    int32_t gps_lon;
+    int32_t inav_lat;
+    int32_t inav_lon;
 };
 
 // Write an INAV packet
 static void Log_Write_INAV()
 {
-    const Vector3f &accel_corr = inertial_nav.accel_correction_ef;
-
     struct log_INAV pkt = {
         LOG_PACKET_HEADER_INIT(LOG_INAV_MSG),
-        baro_alt            : (int16_t)baro_alt,                        // 1 barometer altitude
-        inav_alt            : (int16_t)inertial_nav.get_altitude(),     // 2 accel + baro filtered altitude
-        inav_climb_rate     : (int16_t)inertial_nav.get_velocity_z(),   // 3 accel + baro based climb rate
-        accel_corr_x        : accel_corr.x,                             // 4 accel correction x-axis
-        accel_corr_y        : accel_corr.y,                             // 5 accel correction y-axis
-        accel_corr_z        : accel_corr.z,                             // 6 accel correction z-axis
-        gps_lat_from_home   : g_gps->latitude-home.lat,                 // 7 lat from home
-        gps_lon_from_home   : g_gps->longitude-home.lng,                // 8 lon from home
-        inav_lat_from_home  : inertial_nav.get_latitude_diff(),         // 9 accel based lat from home
-        inav_lon_from_home  : inertial_nav.get_longitude_diff()        // 10 accel based lon from home
+        baro_alt            : baro_alt,
+        sonar_alt           : sonar_alt,
+        inav_alt            : inertial_nav.get_altitude(),
+        gps_alt             : g_gps->altitude_cm,
+        altitude            : current_loc.alt,
+        gps_lat             : g_gps->latitude,
+        gps_lon             : g_gps->longitude,
+        inav_lat            : inertial_nav.get_latitude(),
+        inav_lon            : inertial_nav.get_longitude()
     };
     DataFlash.WriteBlock(&pkt, sizeof(pkt));
 }
@@ -802,7 +798,7 @@ static const struct LogStructure log_structure[] PROGMEM = {
     { LOG_ATTITUDE_MSG, sizeof(log_Attitude),       
       "ATT", "cccccCC",      "RollIn,Roll,PitchIn,Pitch,YawIn,Yaw,NavYaw" },
     { LOG_INAV_MSG, sizeof(log_INAV),       
-      "INAV", "cccfffiiff",  "BAlt,IAlt,IClb,ACorrX,ACorrY,ACorrZ,GLat,GLng,ILat,ILng" },
+      "INAV", "icfiiiiii",  "BAlt,SAlt,IAlt,GAlt,Alt,GLat,GLng,ILat,ILng" },
     { LOG_MODE_MSG, sizeof(log_Mode),
       "MODE", "Mh",          "Mode,ThrCrs" },
     { LOG_STARTUP_MSG, sizeof(log_Startup),         
