@@ -138,6 +138,7 @@ int AP_RangeFinder_LR4::read() {
             else if (tmp == '\r') {
                 if (pos >= 5) {
                     // complete 5-digit integer received, quit receive loop
+                    buf[pos] = '\0';
                     break;
                 }
                 else {
