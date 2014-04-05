@@ -37,8 +37,7 @@ extern const AP_HAL::HAL& hal;
 
 AP_RangeFinder_SF02::AP_RangeFinder_SF02(AP_HAL::UARTDriver *uart, FilterInt16 *filter) :
     RangeFinder(NULL, filter),
-    _port(uart),
-    reading(false)
+    _port(uart)
 {
     min_distance = AP_RANGE_FINDER_SF02_MIN_DISTANCE;
     max_distance = AP_RANGE_FINDER_SF02_MAX_DISTANCE;
@@ -65,7 +64,7 @@ int AP_RangeFinder_SF02::read() {
         tmp = _port->read();
 
         // if it is a digit
-        if (tmp >= '0' && tmp <= '9' || tmp == '.') {
+        if ((tmp >= '0' && tmp <= '9') || tmp == '.') {
             buf[pos++] = tmp;
         }
         else if (tmp == '\r' || tmp == '\n') {
