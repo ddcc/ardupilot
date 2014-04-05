@@ -11,15 +11,12 @@
 class AP_RangeFinder_SF02 : public RangeFinder {
     public:
         AP_RangeFinder_SF02(AP_HAL::UARTDriver *uart, FilterInt16 *filter);
-        bool start_reading();
-        bool stop_reading();
         int read();
 
         float calculate_scaler(int sonar_type, float adc_refence_voltage);
         
     protected:
         AP_HAL::UARTDriver* _port;
-        bool reading;
 };
 
 #endif  // __AP_RANGEFINDER_SF02_H__
