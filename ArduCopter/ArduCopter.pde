@@ -356,7 +356,7 @@ static GCS_MAVLINK gcs[MAVLINK_COMM_NUM_BUFFERS];
 ModeFilterInt16_Size3 sonar_mode_filter(1);
 #if CONFIG_SONAR == ENABLED
 static AP_HAL::AnalogSource *sonar_analog_source;
-static AP_RangeFinder_LR4 *sonar;
+static AP_RangeFinder_SF02 *sonar;
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -937,7 +937,7 @@ void setup() {
  #elif CONFIG_SONAR_SOURCE != SONAR_SOURCE_UART
   #warning "Invalid CONFIG_SONAR_SOURCE"
  #endif
-    sonar = new AP_RangeFinder_LR4(hal.uartC,
+    sonar = new AP_RangeFinder_SF02(hal.uartC,
             &sonar_mode_filter);
 #endif
 
