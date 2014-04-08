@@ -52,12 +52,12 @@ float AP_RangeFinder_SF02::calculate_scaler(int sonar_type, float adc_refence_vo
 
 // read - return value measured by sensor
 int AP_RangeFinder_SF02::read() {
-    uint8_t value, pos = 0;
-    char buf[8];
+    static int value = 0;
+    uint8_t pos = 0;
+    char buf[8], tmp;
     float raw;
-    char tmp;
     
-    // attempt to start reading if not reading
+    // request measurement
     _port->write('d');
 
     while (_port->available()) {
@@ -99,6 +99,6 @@ int AP_RangeFinder_SF02::read() {
         return value;
     }
 
-    // failed to get reading, return error
-    return -1;
+    // failed to get reading
+    return value;
 }
