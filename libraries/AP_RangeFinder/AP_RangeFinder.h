@@ -7,5 +7,6 @@
 #include "AP_RangeFinder_MaxsonarXL.h"
 #include "AP_RangeFinder_MaxsonarI2CXL.h"
 #include "AP_RangeFinder_LR4.h"
+#include "AP_RangeFinder_SF01.h"
 #include "AP_RangeFinder_SF02.h"
 #include "AP_RangeFinder_analog.h"

@@ -15,10 +15,10 @@
  */
 
 /*
- *       AP_RangeFinder_SF02.cpp - Arduino Library for LightWare OptoElectronics SF02/F
+ *       AP_RangeFinder_SF01.cpp - Arduino Library for LightWare OptoElectronics SF01 INT
  *       Code by Dominic Chen
  *
- *       datasheet: http://lightware.co.za/shop/en/index.php?controller=attachment&id_attachment=1
+ *       datasheet: http://lightware.co.za/shop/en/index.php?controller=attachment&id_attachment=3
  *
  *       Sensor should be connected to UART2
  *
@@ -28,30 +28,30 @@
  */
 
 // AVR LibC Includes
-#include "AP_RangeFinder_SF02.h"
+#include "AP_RangeFinder_SF01.h"
 #include <AP_HAL.h>
 
 extern const AP_HAL::HAL& hal;
 
 // Constructor //////////////////////////////////////////////////////////////
 
-AP_RangeFinder_SF02::AP_RangeFinder_SF02(AP_HAL::UARTDriver *uart, FilterInt16 *filter) :
+AP_RangeFinder_SF01::AP_RangeFinder_SF01(AP_HAL::UARTDriver *uart, FilterInt16 *filter) :
     RangeFinder(NULL, filter),
     _port(uart)
 {
-    min_distance = AP_RANGE_FINDER_SF02_MIN_DISTANCE;
-    max_distance = AP_RANGE_FINDER_SF02_MAX_DISTANCE;
+    min_distance = AP_RANGE_FINDER_SF01_MIN_DISTANCE;
+    max_distance = AP_RANGE_FINDER_SF01_MAX_DISTANCE;
 }
 
 // Public Methods //////////////////////////////////////////////////////////////
 
 // do-nothing calculate scaler function to maintain compatibility with analog rangefinders
-float AP_RangeFinder_SF02::calculate_scaler(int sonar_type, float adc_refence_voltage) {
+float AP_RangeFinder_SF01::calculate_scaler(int sonar_type, float adc_refence_voltage) {
     return 1.0f;
 }
 
 // read - return value measured by sensor
-int AP_RangeFinder_SF02::read() {
+int AP_RangeFinder_SF01::read() {
     static int value = 0;
     uint8_t pos = 0;
     char buf[8], tmp;
@@ -90,7 +90,7 @@ int AP_RangeFinder_SF02::read() {
         // ensure distance is within min and max
         value = constrain_float(raw_value, min_distance, max_distance);
 
-        // apply filter
+        // apply mode filter
         value = _mode_filter->apply(value);
 
         // reset position
